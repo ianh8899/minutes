@@ -20,7 +20,7 @@ export default function MinutesList({ minutes, profile, created_by }) {
                     value={searchTerm}
                     onChange={e => setSearchTerm(e.target.value)}
                     placeholder="Search Content Field..."
-                    className="w-1/2 px-5 py-3 mt-5 mb-5 text-center bg-white rounded-full focus:outline-double border-2 border-gray-300 focus:border-blue-500 focus:shadow-outline"
+                    className="w-1/2 px-5 py-3 mt-5 mb-5 text-center bg-white rounded-full focus:outline-double border-2 border-gray-300 focus:border-blue-500 focus:shadow-outline text-black"
                 />
             </div>
             
