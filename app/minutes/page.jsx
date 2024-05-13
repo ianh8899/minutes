@@ -39,7 +39,7 @@ export default async function Minutes(){
                 </div>
             </div>
             <br />
-            {minutesData.length > 0 ? (
+            {minutes.length > 0 ? (
                 <div>
                     <AddEditMinutes organization_id={profile.organization_id} />
                     <MinutesList minutes={minutes} profile={profile} created_by={minutes.created_by} />
