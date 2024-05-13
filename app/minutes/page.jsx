@@ -47,7 +47,7 @@ export default async function Minutes(){
             ) : (
                 <>
                 <div className="text-center mt-5">
-                    <p>If you can't see any items, please update your profile.</p>
+                    <p className="text-black">If you can't see any items, please update your profile.</p>
                 </div>
                 </>
             )}
