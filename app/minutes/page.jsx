@@ -12,7 +12,10 @@ export default async function Minutes(){
     const { data: { user } } = await supabase.auth.getUser();
     const { data: profile, error } = await supabase.from('profiles').select('*').eq('user_id', user?.id).single();
     const { data: minutesData, error: minutesError } = await supabase.from('minutes').select('*').eq('organization_id', profile?.organization_id);
-    const minutes = minutesData.sort((a, b) => new Date(b.created_at) - new Date(a.created_at));
+    let minutes = [];
+        if (minutesData) {
+                minutes = minutesData.sort((a, b) => new Date(b.created_at) - new Date(a.created_at));
+        }
 
     return (
         <div className="min-h-screen bg-gray-100">
