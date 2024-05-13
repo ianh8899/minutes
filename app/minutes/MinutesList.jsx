@@ -52,7 +52,9 @@ export default function MinutesList({ minutes, profile, created_by }) {
                         </dl>
                     </div>
                     <div className="px-4 py-3 bg-gray-50 text-right sm:px-6">
+                        {profile?.user_id === minute.created_by &&
                         <AddEditMinutes edit={true} minute={minute} organization_id={profile.organization_id} created_by={created_by}/>
+                        }                               
                     </div>
                 </div>
             ))}
