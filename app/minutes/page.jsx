@@ -1,21 +1,56 @@
-import { cookies } from "next/headers"
-import { createServerComponentClient } from "@supabase/auth-helpers-nextjs";
+import jwt from 'jsonwebtoken';
+import { createClient } from '@supabase/supabase-js';
 import AddEditProfile from "../components/AddEditProfile";
 import AddEditMinutes from "../components/AddEditMinutes";
 import MinutesList from "./MinutesList";
+import { cookies } from "next/headers";
 
-export default async function Minutes(){
-    const cookieStore = cookies();
-    const supabase = createServerComponentClient({ cookies: () => cookieStore });
+export default async function Minutes() {
+    const token = cookies().get('auth_token');
 
-    // Get the authenticated user
-    const { data: { user } } = await supabase.auth.getUser();
-    const { data: profile, error } = await supabase.from('profiles').select('*').eq('user_id', user?.id).single();
-    const { data: minutesData, error: minutesError } = await supabase.from('minutes').select('*').eq('organization_id', profile?.organization_id);
+    if (!token) {
+        return (
+            <div className="min-h-screen bg-gray-100">
+                <div className="bg-gray-800 p-4 text-white flex justify-between items-center">
+                    <h2 className="font-bold">Not authenticated</h2>
+                </div>
+            </div>
+        );
+    }
+
+    const decodedToken = jwt.decode(token.value);
+
+    if (!decodedToken || !decodedToken.user) {
+        return (
+            <div className="min-h-screen bg-gray-100">
+                <div className="bg-gray-800 p-4 text-white flex justify-between items-center">
+                    <h2 className="font-bold">Invalid token</h2>
+                </div>
+            </div>
+        );
+    }
+
+    const user = decodedToken.user;
+
+    const supabase = createClient(process.env.SUPABASE_URL, process.env.SUPABASE_SERVICE_KEY);
+
+    // Fetch profile data
+    const { data: profile, error: profileError } = await supabase
+    .from('profiles')
+    .select('*')
+    .eq('user_id', user.id)
+    .single();
+
+    // Fetch minutes data based on organisation_id
+    const { data: minutesData, error: minutesError } = await supabase
+        .from('minutes')
+        .select('*')
+        .eq('organisation_id', profile.organisation_id);
+
     let minutes = [];
-        if (minutesData) {
-                minutes = minutesData.sort((a, b) => new Date(b.created_at) - new Date(a.created_at));
-        }
+    if (minutesData) {
+        minutes = minutesData.sort((a, b) => new Date(b.created_at) - new Date(a.created_at));
+    }
 
     return (
         <div className="min-h-screen bg-gray-100">
@@ -27,11 +62,11 @@ export default async function Minutes(){
                 </div>
                 <div className="flex items-center">
                     <h2 className="font-bold mr-2">In Organization: </h2>
-                    <p>{profile?.organization_id}</p>
+                    <p>{profile?.organisation_id}</p>
                 </div>
                 <div className="flex items-end gap-4 mr-4">
                     <AddEditProfile profile={profile} />
-                    <form action="/auth/signout" method="post">
+                    <form action="/api/logout" method="post">
                         <button className="bg-red-500 hover:bg-red-700 text-white font-bold py-2 px-4 rounded" type="submit">
                             Sign Out
                         </button>
@@ -41,16 +76,15 @@ export default async function Minutes(){
             <br />
             {minutes.length > 0 ? (
                 <div>
-                    <AddEditMinutes organization_id={profile.organization_id} />
-                    <MinutesList minutes={minutes} profile={profile} created_by={minutes.created_by} />
+                    
+                    <AddEditMinutes minutes={minutes} organisation_id={profile.organisation_id} created_by={user.id} />
+                    <MinutesList minutes={minutes} user={user} profile={profile} created_by={user.id} />
                 </div>
             ) : (
-                <>
-                <div className="text-center mt-5">
-                    <p className="text-black">If you can't see any items, please update your profile.</p>
+                <div>No minutes available
+                    <AddEditMinutes minutes={minutes} organisation_id={profile.organisation_id} created_by={user.id}/>
                 </div>
-                </>
             )}
         </div>
-    )
+    );
 }

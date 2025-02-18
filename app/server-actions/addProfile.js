@@ -1,6 +1,7 @@
 'use server';
 
-import { createServerComponentClient } from "@supabase/auth-helpers-nextjs";
+import jwt from 'jsonwebtoken';
+import { createClient } from '@supabase/supabase-js';
 import { cookies } from "next/headers";
 import { revalidatePath } from "next/cache";
 
@@ -8,11 +9,12 @@ export async function addProfile(formData){
     const id = formData.get('id');
     const name = formData.get('name');
     const surname = formData.get('surname');
-    const organization_id = formData.get('organization_id');
+    const organisation_id = formData.get('organisation_id');
 
-    const cookieStore = cookies();
-    const supabase = createServerComponentClient({cookies: () => cookieStore});
-    const { data: { user } } = await supabase.auth.getUser();
+    const supabase = createClient(process.env.SUPABASE_URL, process.env.SUPABASE_SERVICE_KEY);
+    const token = cookies().get('auth_token');
+    const decodedToken = jwt.decode(token.value);
+    const user = decodedToken.user;
 
     if(!user){
         console.error('User is not authenticated within updateProfile server action');
@@ -25,7 +27,7 @@ export async function addProfile(formData){
             {
                 name, 
                 surname, 
-                organization_id,
+                organisation_id,
                 user_id: user.id,
             }
         )

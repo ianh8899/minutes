@@ -1,17 +1,26 @@
 'use client';
 
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { addMinutes } from '../server-actions/addMinutes';
 import { updateMinutes } from '../server-actions/updateMinutes';
 
-export default function AddEditMinutes ({minute, organization_id, created_by, edit}){
-
+export default function AddEditMinutes ({minute, organisation_id, created_by, edit}){
     const [showModal, setShowModal] = useState(false);
     const [formData, setFormData] = useState({
         id: minute?.id || '',
         title: minute?.title || '',
         content: minute?.content || '',
+        organisation_id: organisation_id,
+        created_by: created_by
     });
+
+    useEffect(() => {
+        setFormData((prevData) => ({
+            ...prevData,
+            organisation_id: organisation_id,
+            created_by: created_by
+        }));
+    }, [organisation_id, created_by]);
 
     const handleChange = (e) => {
         setFormData({
@@ -40,7 +49,7 @@ export default function AddEditMinutes ({minute, organization_id, created_by, ed
                             <div className="bg-gray-700 p-4 rounded max-w-md mx-auto mb-8">
                                 <form action={formAction} onSubmit={() => setShowModal(false)}>
                                     <input type="hidden" name="id" value={formData.id} />
-                                    <input type="hidden" name="organization_id" value={organization_id} />
+                                    <input type="hidden" name="organisation_id" value={organisation_id} />
                                     <input type="hidden" name="created_by" value={created_by} />
                                     <div className="mb-4">
                                         <label className="block text-gray-300 text-sm font-bold mb-2" htmlFor='brand'>Title</label>

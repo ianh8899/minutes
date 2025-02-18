@@ -1,23 +1,20 @@
-import { createMiddlewareClient } from "@supabase/auth-helpers-nextjs";
-import { NextResponse } from "next/server";
+import { NextResponse } from 'next/server';
+import { cookies } from 'next/headers';
 
 export async function middleware(req) {
-  const res = NextResponse.next();
-  const supabase = createMiddlewareClient({req, res})
+  const token = cookies().get('auth_token');
 
-  const {data: {user}} = await supabase.auth.getUser();
-
-  if (user && req.nextUrl.pathname === '/'){
+  if (token && req.nextUrl.pathname === '/') {
     return NextResponse.redirect(new URL('/minutes', req.url));
   }
 
-  if (!user && req.nextUrl.pathname !== "/"){
+  if (!token && req.nextUrl.pathname !== '/') {
     return NextResponse.redirect(new URL('/', req.url));
   }
 
-  return res;
-  }
+  return NextResponse.next();
+}
 
-  export const config = {
-    matcher: ['/', '/minutes']
-  }
+export const config = {
+  matcher: ['/', '/minutes'],
+};

@@ -5,7 +5,7 @@ import { useState } from 'react';
 import { format } from 'date-fns';
 import AddEditMinutes from "../components/AddEditMinutes";
 
-export default function MinutesList({ minutes, profile, created_by }) {
+export default function MinutesList({ minutes, user, profile, created_by }) {
     const [searchTerm, setSearchTerm] = useState('');
 
     const filteredMinutes = minutes.filter(minute => 
@@ -37,23 +37,23 @@ export default function MinutesList({ minutes, profile, created_by }) {
                                 <dt className="text-sm font-medium text-gray-500">Content</dt>
                                 <dd className="mt-1 text-sm text-gray-900 sm:mt-0 sm:col-span-2">{minute.content}</dd>
                             </div>
-                            <div className="bg-white px-4 py-5 sm:grid sm:grid-cols-3 sm:gap-4 sm:px-6">
+                            {/* <div className="bg-white px-4 py-5 sm:grid sm:grid-cols-3 sm:gap-4 sm:px-6">
                                 <dt className="text-sm font-medium text-gray-500">Date</dt>
                                 <dd className="mt-1 text-sm text-gray-900 sm:mt-0 sm:col-span-2">{format(new Date(minute.created_at), 'dd/MM/yyyy')}</dd>
-                            </div>
-                            <div className="bg-gray-50 px-4 py-5 sm:grid sm:grid-cols-3 sm:gap-4 sm:px-6">
+                            </div> */}
+                            {/* <div className="bg-gray-50 px-4 py-5 sm:grid sm:grid-cols-3 sm:gap-4 sm:px-6">
                                 <dt className="text-sm font-medium text-gray-500">Last Updated</dt>
                                 <dd className="mt-1 text-sm text-gray-900 sm:mt-0 sm:col-span-2">{format(new Date(minute.updated_at), 'dd/MM/yyyy')}</dd>
-                            </div>
+                            </div> */}
                             <div className="bg-white px-4 py-5 sm:grid sm:grid-cols-3 sm:gap-4 sm:px-6">
                                 <dt className="text-sm font-medium text-gray-500">Organisation</dt>
-                                <dd className="mt-1 text-sm text-gray-900 sm:mt-0 sm:col-span-2">{minute.organization_id}</dd>
+                                <dd className="mt-1 text-sm text-gray-900 sm:mt-0 sm:col-span-2">{minute.organisation_id}</dd>
                             </div>
                         </dl>
                     </div>
                     <div className="px-4 py-3 bg-gray-50 text-right sm:px-6">
-                        {profile?.user_id === minute.created_by &&
-                        <AddEditMinutes edit={true} minute={minute} organization_id={profile.organization_id} created_by={created_by}/>
+                        {user.id === minute.created_by &&
+                        <AddEditMinutes edit={true} minute={minute} organisation_id={profile} created_by={created_by}/>
                         }                               
                     </div>
                 </div>

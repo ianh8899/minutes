@@ -11,7 +11,7 @@ export default function AddEditProfile ({profile}){
     const [formData, setFormData] = useState({
         name: profile?.name,
         surname: profile?.surname,
-        organization_id: profile?.organization_id,
+        organisation_id: profile?.organisation_id,
     });
 
     const handleChange = (e) => {
@@ -65,12 +65,12 @@ export default function AddEditProfile ({profile}){
                                         />
                                     </div>
                                     <div className="mb-4">
-                                        <label className="block text-gray-300 text-sm font-bold mb-2" htmlFor='referenceNumber'>Organization ID</label>
+                                        <label className="block text-gray-300 text-sm font-bold mb-2" htmlFor='referenceNumber'>Organisation ID</label>
                                         <input 
                                             type="text"
-                                            name="organization_id"
-                                            id="organization_id"
-                                            value={formData.organization_id}
+                                            name="organisation_id"
+                                            id="organisation_id"
+                                            value={formData.organisation_id}
                                             onChange={handleChange}
                                             className="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
                                             required
